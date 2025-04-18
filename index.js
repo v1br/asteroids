@@ -1,3 +1,4 @@
+// initial values when script launches
 let canvas;
 let ctx;
 let canvasWidth = 900;
@@ -13,49 +14,53 @@ let gameover = false;
 
 let musicToggle = false;
 
-// Music and Sound Effects B)
-let buttonClickSound = document.createElement("audio");
-let shipBreakdownSound = document.createElement("audio");
-let asteroidzMusic = document.createElement("audio");
-
-buttonClickSound.src = "/assets/audio/ButtonClick.wav";
-shipBreakdownSound.src = "/assets/audio/ShipBreakdown.wav";
-asteroidzMusic.src = "/assets/audio/Asteroidz.mp3";
+// audio setup
+let buttonClickSound = new Audio("/assets/audio/ButtonClick.wav");
+let shipBreakdownSound = new Audio("/assets/audio/ShipBreakdown.wav");
+let asteroidzMusic = new Audio("/assets/audio/Asteroidz.mp3");
 
 asteroidzMusic.volume = 0.8;
 buttonClickSound.volume = 0.8;
 shipBreakdownSound.volume = 0.8;
 
-
 document.addEventListener('DOMContentLoaded', SetupCanvas);
 
-function SetupCanvas(){
-    canvas = document.getElementById('my-canvas');
+function SetupCanvas() {
+    canvas = document.getElementById('asteroids');
     ctx = canvas.getContext('2d');
-    canvas.width = canvasWidth;
-    canvas.height = canvasHeight;
+
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = canvas.clientWidth * dpr;
+    canvas.height = canvas.clientHeight * dpr;
+    ctx.scale(dpr, dpr);
+
+    canvasWidth = canvas.clientWidth;
+    canvasHeight = canvas.clientHeight;
+    scale = canvas.width / 900;
+
     ctx.fillStyle = 'black';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     ship = new Ship();
 
-    for(let i=0; i<5; i++){
+    for (let i = 0; i < 5; i++) {
         asteroids.push(new Asteroid());
-    }  
+    }
 
-    document.body.addEventListener("keydown", function(e){
+    document.body.addEventListener("keydown", function (e) {
         keys[e.keyCode] = true;
     });
 
-    document.body.addEventListener("keyup", function(e){
+    document.body.addEventListener("keyup", function (e) {
         keys[e.keyCode] = false;
-        if(e.keyCode == 32){
+        if (e.keyCode == 32) {
             bullets.push(new Bullet(ship.angle));
         }
     });
 
     Start();
 }
+
 
 
 class Ship {
@@ -66,11 +71,11 @@ class Ship {
         this.movingForward = false;
         this.movingBackward = false;
         this.gear = 1;
-        this.speed = 0.1*scale;
+        this.speed = 0.1;
         this.velX = 0;
         this.velY = 0;
         this.rotateSpeed = 0.001;
-        this.radius = 25 * scale;
+        this.radius = 16;
         this.angle = -90;
         this.strokeColor = '#39ff0d';
         this.fillColor = '#39ff0d';
@@ -217,8 +222,8 @@ class Bullet{
         this.x = ship.tipX;
         this.y = ship.tipY;
         this.angle = angle;
-        this.height = 4*scale;
-        this.width = 4*scale;
+        this.height = 2;
+        this.width = 2;
         this.speed = 4 + Math.sqrt(ship.getVelX() * ship.getVelX() + ship.getVelY() * ship.getVelY());
         this.velX = 0;
         this.velY = 0;
@@ -250,17 +255,21 @@ class Asteroid{
         this.x = x || ((Math.random() < 0.5)? Math.floor(Math.random() * (this.shipX - this.fieldRadius)) : Math.floor(Math.random() * (canvasWidth - this.shipX - this.fieldRadius)));
         this.y = y || ((Math.random() < 0.5)? Math.floor(Math.random() * (this.shipY - this.fieldRadius)) : Math.floor(Math.random() * (canvasHeight - this.shipY - this.fieldRadius)));
 
-        this.speed = (1 + 0.5 * Math.floor(Math.random() * 3))*scale;
+        this.speed = (1 + 0.5 * Math.floor(Math.random() * 3));
         this.rotateSpeed = 0.0001;
         this.angle = Math.floor(Math.random() * 359);        
         this.spin = Math.floor(Math.random() * 3) - 1;
         this.offset = Math.floor(Math.random() * 30) * scale;
-        this.radius = radius || (50 + this.offset);
+        this.radius = radius || (40 + this.offset);
         this.collisionRadius = collisionRadius || (this.radius - 4*scale);
-        this.strokeColor = 'white';
+        this.strokeColor = '#6ceded';
 
+        this.updateStrokeColor();
+    }
 
-
+    updateStrokeColor() {
+        const colors = ['#6ceded', '#6cb9c9', '#6d85a5'];
+        this.strokeColor = colors[Math.floor(Math.random() * colors.length)];
     }
 
     Rotate(dir){
@@ -290,7 +299,8 @@ class Asteroid{
     }
 
     Draw(){
-
+        const previousLineWidth = ctx.lineWidth;
+        ctx.lineWidth = 2;
         ctx.strokeStyle = this.strokeColor;
         ctx.beginPath();
         let vertAngle = ((Math.PI * 2) / 6);
@@ -303,6 +313,7 @@ class Asteroid{
         }
         ctx.closePath();
         ctx.stroke();
+        ctx.lineWidth = previousLineWidth;
     }
 }
 
@@ -348,8 +359,9 @@ function DrawLives(){
 function Start(){
     ctx.clearRect(0,0,canvasWidth, canvasHeight);
     ctx.fillStyle = 'white';
-    ctx.font = "50px 'Aadhunik', Arial";
-    ctx.fillText('ASTEROIDS ', canvasWidth / 2 - 120, canvasWidth / 2 - 250);
+    ctx.font = `${50 * scale}px 'Aadhunik', Arial`;
+    ctx.fillText('ASTEROIDS ', canvasWidth / 2 - 120 * scale, canvasHeight / 2 - 250 * scale);
+    
 
     ctx.font = "20px 'Aadhunik', Arial";
     ctx.fillText("Controls: WASD or Cursor Keys to Move Ship. ", canvasWidth / 2 - 200, canvasWidth / 2 - 200);

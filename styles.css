@@ -1,23 +1,41 @@
 body{
-    background: #000000;
+    background: #3d88c7;
+    font-family: "Open Sans", sans-serif;
 }
 
 #container {
-    max-width: 1400xp;
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);    
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: start;
+    width: 60vw;
+    height: 88vh;
+    padding: 1em;
+    background: white;
+    box-shadow: 0 0 2px 2px #232323;
 }
 
-#my-canvas {
-    background: #000000;
-    border: 1px solid #ffffff;
-    margin: auto;
+#asteroids {
+    display: block;
+    aspect-ratio: 16 / 9;
+    width: 100%;
+    height: auto;
+    background: #0d001a;
+    border: 2px solid #ffffff;
+}
+
+#controls {
+    display: block;
+    margin-top: 1em;
+    width: 100%;
 }
 
 @font-face { 
     font-family: "Aadhunik"; 
     src: url("./assets/fonts/Aadhunik.ttf");
     format: "truetype";
- }
+}
