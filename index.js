@@ -244,24 +244,24 @@ class Bullet{
 }
 
 
-class Asteroid{
-    constructor(x, y, radius, level, collisionRadius){
+class Asteroid {
+    constructor(x, y, radius, level, collisionRadius) {
         this.visible = true;
         this.level = level || 1;
         this.shipX = ship.getShipX();
         this.shipY = ship.getShipY();
-        this.fieldRadius = 300*scale;
+        this.fieldRadius = 300 * scale;
 
-        this.x = x || ((Math.random() < 0.5)? Math.floor(Math.random() * (this.shipX - this.fieldRadius)) : Math.floor(Math.random() * (canvasWidth - this.shipX - this.fieldRadius)));
-        this.y = y || ((Math.random() < 0.5)? Math.floor(Math.random() * (this.shipY - this.fieldRadius)) : Math.floor(Math.random() * (canvasHeight - this.shipY - this.fieldRadius)));
+        this.x = x || ((Math.random() < 0.5) ? Math.floor(Math.random() * (this.shipX - this.fieldRadius)) : Math.floor(Math.random() * (canvasWidth - this.shipX - this.fieldRadius)));
+        this.y = y || ((Math.random() < 0.5) ? Math.floor(Math.random() * (this.shipY - this.fieldRadius)) : Math.floor(Math.random() * (canvasHeight - this.shipY - this.fieldRadius)));
 
         this.speed = (1 + 0.5 * Math.floor(Math.random() * 3));
         this.rotateSpeed = 0.0001;
-        this.angle = Math.floor(Math.random() * 359);        
+        this.angle = Math.floor(Math.random() * 359);
         this.spin = Math.floor(Math.random() * 3) - 1;
         this.offset = Math.floor(Math.random() * 30) * scale;
         this.radius = radius || (40 + this.offset);
-        this.collisionRadius = collisionRadius || (this.radius - 4*scale);
+        this.collisionRadius = collisionRadius || (this.radius - 4 * scale);
         this.strokeColor = '#6ceded';
 
         this.updateStrokeColor();
@@ -272,40 +272,37 @@ class Asteroid{
         this.strokeColor = colors[Math.floor(Math.random() * colors.length)];
     }
 
-    Rotate(dir){
+    Rotate(dir) {
         this.angle += this.rotateSpeed * dir;
     }
 
-    Update(){
+    Update() {
         var radians = this.angle / Math.PI * 180;
         this.x += Math.cos(radians) * this.speed;
         this.y += Math.sin(radians) * this.speed;
 
-        if(this.x < this.radius){
-            this.x = canvas.width;
+        // Check for the screen boundaries and move smoothly off-screen
+        if (this.x < -this.radius) {
+            this.x = -this.radius - 1; // Move it beyond the left edge
+        } else if (this.x > canvas.width + this.radius) {
+            this.x = canvas.width + this.radius + 1; // Move it beyond the right edge
         }
 
-        if(this.x > canvas.width){
-            this.x = this.radius;
-        }
-
-        if(this.y < this.radius){
-            this.y = canvas.height;
-        }
-
-        if(this.y > canvas.height){
-            this.y = this.radius;
+        if (this.y < -this.radius) {
+            this.y = -this.radius - 1; // Move it beyond the top edge
+        } else if (this.y > canvas.height + this.radius) {
+            this.y = canvas.height + this.radius + 1; // Move it beyond the bottom edge
         }
     }
 
-    Draw(){
+    Draw() {
         const previousLineWidth = ctx.lineWidth;
         ctx.lineWidth = 2;
         ctx.strokeStyle = this.strokeColor;
         ctx.beginPath();
         let vertAngle = ((Math.PI * 2) / 6);
         var radians = this.angle / Math.PI * 180;
-        for(let i=0; i<6; i++){
+        for (let i = 0; i < 6; i++) {
             ctx.lineTo(
                 this.x - this.radius * Math.cos(vertAngle * i + radians),
                 this.y - this.radius * Math.sin(vertAngle * i + radians)
@@ -316,6 +313,7 @@ class Asteroid{
         ctx.lineWidth = previousLineWidth;
     }
 }
+
 
 function CircleCollision(x1, y1, r1, x2, y2, r2){
     let rTotal;
