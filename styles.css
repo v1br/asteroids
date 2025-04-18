@@ -18,6 +18,6 @@ body{
 
 @font-face { 
     font-family: "Aadhunik"; 
-    src: url("./fonts/Aadhunik.ttf");
+    src: url("./assets/fonts/Aadhunik.ttf");
     format: "truetype";
  }

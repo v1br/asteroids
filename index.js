@@ -18,9 +18,9 @@ let buttonClickSound = document.createElement("audio");
 let shipBreakdownSound = document.createElement("audio");
 let asteroidzMusic = document.createElement("audio");
 
-buttonClickSound.src = "src/ButtonClick.wav";
-shipBreakdownSound.src = "src/ShipBreakdown.wav";
-asteroidzMusic.src = "src/Asteroidz.mp3";
+buttonClickSound.src = "/assets/audio/ButtonClick.wav";
+shipBreakdownSound.src = "/assets/audio/ShipBreakdown.wav";
+asteroidzMusic.src = "/assets/audio/Asteroidz.mp3";
 
 asteroidzMusic.volume = 0.8;
 buttonClickSound.volume = 0.8;
